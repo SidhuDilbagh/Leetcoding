@@ -1,8 +1,11 @@
+/**
+ * Note: The returned array must be malloced, assume caller calls free().
+ */
 int* countBits(int n, int* returnSize)
 {
         n++;
         *returnSize=n;
-        int *a=malloc(n*sizeof(int));
+        int *a=malloc((n+1)*sizeof(int));
         a[0]=0;
         int f=1,j=0;
         for(int i=1;i<n;i++)
