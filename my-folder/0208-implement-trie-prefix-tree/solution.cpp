@@ -1,60 +1,52 @@
+class trieNode{
+    public:
+        trieNode *children[26];
+        bool isTerminal;
+        trieNode(){
+            for(int i=0;i<26;i++){
+                children[i]=nullptr;
+                isTerminal=false;
+            }
+        }
+};
 class Trie {
-    struct trie{
-        bool isTerminal=true;
-        trie* next[26]={NULL};
-    }*start;
+    trieNode *root;
 public:
     Trie() {
-        start=new trie;
+        root = new trieNode();
     }
     
     void insert(string word) {
-        int n=size(word);
-        trie *ptr=start;
+        int n=word.size();
+        trieNode *ptr=root;
         for(int i=0;i<n;i++){
-            if(ptr->next[word[i]-'a']) {
-                ptr=ptr->next[word[i]-'a'];
-                if(i==n-1) ptr->isTerminal=true;
+            if(!ptr->children[word[i]-'a']){
+                ptr->children[word[i]-'a'] = new trieNode(); 
             }
-            else{
-                ptr->next[word[i]-'a']=new trie;
-                ptr=ptr->next[word[i]-'a'];
-                if(i!=n-1) ptr->isTerminal=false; 
-            }
+            ptr = ptr->children[word[i]-'a'];
         }
+        ptr->isTerminal=true;
     }
     
     bool search(string word) {
-        int n=size(word);
-        trie *ptr=start;
-        for(int i=0;i<n;i++){
-            if(ptr->next[word[i]-'a']){
-                ptr=ptr->next[word[i]-'a'];
-                if(i==n-1 && ptr->isTerminal) return true;
+        trieNode *ptr=root;
+        for(char x:word){
+            if(!ptr->children[x-'a']){
+                return false;
             }
-            else return false;
+            ptr=ptr->children[x-'a'];
         }
-        return false;
+        return ptr->isTerminal;
     }
     
     bool startsWith(string prefix) {
-        int n=size(prefix);
-        trie *ptr=start;
-        for(int i=0;i<n;i++){
-            if(ptr->next[prefix[i]-'a']){
-                ptr=ptr->next[prefix[i]-'a'];
-                if(i==n-1) return true;
+        trieNode *ptr=root;
+        for(char x:prefix){
+            if(!ptr->children[x-'a']){
+                return false;
             }
-            else return false;
+            ptr=ptr->children[x-'a'];
         }
-        return false;
+        return true;
     }
 };
-
-/**
- * Your Trie object will be instantiated and called as such:
- * Trie* obj = new Trie();
- * obj->insert(word);
- * bool param_2 = obj->search(word);
- * bool param_3 = obj->startsWith(prefix);
- */
